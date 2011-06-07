@@ -38,3 +38,14 @@ function reviews_form($node, &$form_state) {
   
   return $form;
 }
+
+/**
+ * Implements hook_node_view().
+ */
+function reviews_node_view($node, $view_mode, $langcode) {
+  $node->title = 'Review: ' . $node->title;
+  
+  if ($view_mode == 'full') {
+    drupal_set_title($node->title);
+  }
+}
