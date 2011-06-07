@@ -12,4 +12,50 @@ function reviews_install() {
   node_types_rebuild();
   $types = node_type_get_types();
   node_add_body_field($types['book_review'], t('Review'));
+  
+  foreach (reviews_installed_fields() as $field_name => $field) {
+    field_create_field($field);
+  }
+  
+  foreach (reviews_installed_instances() as $field_name => $instance) {
+    field_create_instance($instance);
+  }
+}
+
+function reviews_uninstall() {
+  foreach (reviews_installed_fields() as $field_name => $field) {
+    field_delete_field($field_name);
+  }
+}
+
+/**
+ * Return a structured array of all fields defined by this module.
+ */
+function reviews_installed_fields() {
+  return array(
+    'field_rating' => array(
+      'field_name' => 'field_rating',
+      'type' => 'number_integer',
+      'locked' => TRUE,
+    ),
+  );
+}
+
+/**
+ * Return a structured array of all field instances defined by this module.
+ */
+function reviews_installed_instances() {
+  return array(
+    'field_rating' => array(
+      'field_name' => 'field_rating',
+      'entity_type' => 'node',
+      'bundle' => 'book_review',
+      'label' => t('Rating'),
+      'settings' => array(
+        'min' => 1,
+        'max' => 5,
+        'suffix' => ' / 5 stars',
+      ),
+    ),
+  );
 }
