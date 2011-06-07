@@ -20,3 +20,21 @@ function reviews_node_info() {
     ),
   );
 }
+
+/**
+ * Implements hook_form().
+ */
+function reviews_form($node, &$form_state) {
+  $type = node_type_get_type($node);
+  
+  $form = array();
+  $form['title'] = array(
+    '#type' => 'textfield',
+    '#title' => check_plain($type->title_label),
+    '#default_value' => empty($node->title) ? '' : $node->title,
+    '#required' => TRUE,
+    '#weight' => -10,
+  );
+  
+  return $form;
+}
