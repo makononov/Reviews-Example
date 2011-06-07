@@ -4,3 +4,19 @@
  *
  * Hook implementations and functions for the Reviews module.
  */
+
+/**
+ * Implements hook_node_info().
+ */
+function reviews_node_info() {
+  return array(
+    'book_review' => array(
+      'name' => t('Book Review'),
+      'base' => 'reviews',
+      'description' => t('Provides the Book Review content type and UI.'),
+      'has_title' => TRUE,
+      'title_label' => t('Book Title'),
+      'locked' => TRUE,
+    ),
+  );
+}
