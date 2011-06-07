@@ -1,0 +1,15 @@
+<?php
+/**
+ * @file
+ *
+ * Installation, uninstallation, and update functions for the Reviews module.
+ */
+ 
+/**
+ * Implements hook_install().
+ */
+function reviews_install() {
+  node_types_rebuild();
+  $types = node_type_get_types();
+  node_add_body_field($types['book_review'], t('Review'));
+}
