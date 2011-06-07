@@ -49,3 +49,48 @@ function reviews_node_view($node, $view_mode, $langcode) {
     drupal_set_title($node->title);
   }
 }
+
+/**
+ * Implements hook_block_info().
+ */
+function reviews_block_info() {
+  return array(
+    'recent_reviews' => array(
+      'info' => t('Recent Book Reviews'),
+      'cache' => DRUPAL_CACHE_GLOBAL,
+    ),
+  );
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function reviews_block_view($delta = '') {
+  $block = array();
+  
+  if ($delta == 'recent_reviews' && user_access('access content')) {
+    $block['subject'] = t('Recent Book Reviews');
+    $block['content'] = reviews_recent_reviews_content();
+  }
+  
+  return $block;
+}
+
+/**
+ * Return a renderable array of recent book reviews.
+ */
+function reviews_recent_reviews_content() {
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'node');
+  $query->propertyCondition('type', 'book_review');
+  $query->propertyOrderBy('created', 'DESC');
+  $query->range(0, 5);
+  $results = $query->execute();
+  
+  $nodes = array();
+  if (!empty($results['node'])) {
+    $nodes = node_load_multiple(array_keys($results['node']));
+  }
+  
+  return node_title_list($nodes);
+}
