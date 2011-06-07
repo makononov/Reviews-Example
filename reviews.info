@@ -1,0 +1,6 @@
+name = Reviews
+description = "A custom book review module"
+core = 7.x
+
+files[] = reviews.install
+files[] = reviews.module
