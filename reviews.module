@@ -36,6 +36,24 @@ function reviews_form($node, &$form_state) {
     '#weight' => -10,
   );
   
+  if (!empty($form_state['values']['field_rating'][LANGUAGE_NONE][0]['value'])) {
+    $display = $form_state['values']['field_rating'][LANGUAGE_NONE][0]['value'];
+  }
+  elseif (!empty($node->field_rating[LANGUAGE_NONE][0]['value'])) {
+    $display = $node->field_rating[LANGUAGE_NONE][0]['value'];
+  }
+  else {
+    $display = t('Not rated.');
+  }
+  
+  $form['rating_display'] = array(
+    '#type' => 'item',
+    '#markup' => $display,
+    '#title' => t('Current Rating'),
+    '#prefix' => '<div id="rating-display">',
+    '#suffix' => '</div>',
+  );
+  
   return $form;
 }
 
@@ -93,4 +111,23 @@ function reviews_recent_reviews_content() {
   }
   
   return node_title_list($nodes);
+}
+
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function reviews_form_book_review_node_form_alter(&$form, &$form_state, $form_id) {
+  $form['field_rating'][LANGUAGE_NONE][0]['value']['#ajax'] = array(
+    'callback' => 'reviews_rating_js',
+    'wrapper' => 'rating-display',
+  );
+}
+
+
+/**
+ * AJAX callback for rating display.
+ */
+function reviews_rating_js($form, $form_state) {
+  return $form['rating_display'];
 }
